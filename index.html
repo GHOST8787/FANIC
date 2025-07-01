@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>虛擬貨幣技術分析平台</title>
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 標題區域 -->
+        <header class="header">
+            <h1>📈 虛擬貨幣技術分析平台</h1>
+            <div class="data-source-info">
+                💡 目前使用模擬數據進行展示，具有真實市場波動特性
+            </div>
+        </header>
+
+        <!-- 主要內容 -->
+        <div class="main-content">
+            <!-- 側邊控制欄 -->
+            <aside class="sidebar">
+                <h2>⚙️ 設置</h2>
+                
+                <!-- 幣種選擇 -->
+                <div class="control-group">
+                    <label for="symbolSelect">選擇虛擬貨幣</label>
+                    <select id="symbolSelect">
+                        <option value="BTCUSDT">比特幣 (BTC)</option>
+                        <option value="ETHUSDT">以太坊 (ETH)</option>
+                        <option value="BNBUSDT">幣安幣 (BNB)</option>
+                        <option value="ADAUSDT">卡爾達諾 (ADA)</option>
+                        <option value="XRPUSDT">瑞波幣 (XRP)</option>
+                        <option value="SOLUSDT">索拉納 (SOL)</option>
+                        <option value="DOTUSDT">波卡 (DOT)</option>
+                        <option value="DOGEUSDT">狗狗幣 (DOGE)</option>
+                        <option value="AVAXUSDT">雪崩 (AVAX)</option>
+                        <option value="MATICUSDT">多邊形 (MATIC)</option>
+                    </select>
+                </div>
+
+                <!-- 時間週期 -->
+                <div class="control-group">
+                    <label for="timeframeSelect">選擇時間週期</label>
+                    <select id="timeframeSelect">
+                        <option value="1m">1分鐘</option>
+                        <option value="5m">5分鐘</option>
+                        <option value="15m">15分鐘</option>
+                        <option value="1h" selected>1小時</option>
+                        <option value="4h">4小時</option>
+                        <option value="1d">1天</option>
+                    </select>
+                </div>
+
+                <!-- 技術指標 -->
+                <div class="control-group">
+                    <h3>技術指標</h3>
+                    
+                    <div class="indicator-item">
+                        <input type="checkbox" id="smaCheck" checked>
+                        <label for="smaCheck">簡單移動平均線 (SMA)</label>
+                        <input type="range" id="smaPeriod" min="5" max="200" value="20" class="slider">
+                        <span id="smaValue">20</span>
+                    </div>
+
+                    <div class="indicator-item">
+                        <input type="checkbox" id="emaCheck">
+                        <label for="emaCheck">指數移動平均線 (EMA)</label>
+                        <input type="range" id="emaPeriod" min="5" max="200" value="12" class="slider">
+                        <span id="emaValue">12</span>
+                    </div>
+
+                    <div class="indicator-item">
+                        <input type="checkbox" id="rsiCheck" checked>
+                        <label for="rsiCheck">相對強弱指標 (RSI)</label>
+                        <input type="range" id="rsiPeriod" min="5" max="50" value="14" class="slider">
+                        <span id="rsiValue">14</span>
+                    </div>
+
+                    <div class="indicator-item">
+                        <input type="checkbox" id="macdCheck">
+                        <label for="macdCheck">MACD</label>
+                    </div>
+
+                    <div class="indicator-item">
+                        <input type="checkbox" id="bbCheck">
+                        <label for="bbCheck">布林通道</label>
+                        <input type="range" id="bbPeriod" min="10" max="50" value="20" class="slider">
+                        <span id="bbValue">20</span>
+                    </div>
+
+                    <div class="indicator-item">
+                        <input type="checkbox" id="volumeCheck" checked>
+                        <label for="volumeCheck">成交量</label>
+                    </div>
+
+                    <div class="indicator-item">
+                        <input type="checkbox" id="smcCheck">
+                        <label for="smcCheck">SMC 智能資金概念分析</label>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 圖表和信息區域 -->
+            <div class="chart-area">
+                <!-- 當前選擇資訊 -->
+                <div class="current-info">
+                    <h2 id="currentPair">比特幣 (BTC) - 1小時</h2>
+                </div>
+
+                <!-- 圖表容器 -->
+                <div id="chartContainer" class="chart-container">
+                    <div class="loading">正在加載數據...</div>
+                </div>
+
+                <!-- 底部信息區域 -->
+                <div class="info-panel">
+                    <!-- 市場信息 -->
+                    <div class="market-info">
+                        <h3>市場信息</h3>
+                        <div id="marketData" class="market-data">
+                            <!-- 市場數據將在這裡顯示 -->
+                        </div>
+                    </div>
+
+                    <!-- 技術指標數值 -->
+                    <div class="indicators-info">
+                        <h3>技術指標數值</h3>
+                        <div id="indicatorValues" class="indicator-values">
+                            <!-- 指標數值將在這裡顯示 -->
+                        </div>
+                    </div>
+
+                    <!-- 交易信號 -->
+                    <div class="signals-info">
+                        <h3>交易信號</h3>
+                        <div id="tradingSignals" class="trading-signals">
+                            <!-- 交易信號將在這裡顯示 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
