@@ -112,6 +112,39 @@ class CryptoAnalysisPlatform {
         return data;
     }
     
+    async fetchBinanceData(symbol, timeframe, limit = 500) {
+        try {
+            const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${timeframe}&limit=${limit}`;
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                throw new Error(`API request failed: ${response.status}`);
+            }
+            
+            const rawData = await response.json();
+            
+            // 檢查是否為錯誤響應
+            if (rawData.code && rawData.msg) {
+                throw new Error(`Binance API error: ${rawData.msg}`);
+            }
+            
+            // 轉換幣安數據格式
+            const data = rawData.map(item => ({
+                timestamp: new Date(item[0]), // 開盤時間
+                open: parseFloat(item[1]),
+                high: parseFloat(item[2]),
+                low: parseFloat(item[3]),
+                close: parseFloat(item[4]),
+                volume: parseFloat(item[5])
+            }));
+            
+            return data;
+        } catch (error) {
+            console.error('獲取幣安數據失敗:', error);
+            throw error;
+        }
+    }
+    
     calculateIndicators(data) {
         const indicators = {};
         
@@ -315,7 +348,7 @@ class CryptoAnalysisPlatform {
         return signals;
     }
     
-    updateData() {
+    async updateData() {
         const symbol = document.getElementById('symbolSelect').value;
         const timeframe = document.getElementById('timeframeSelect').value;
         
@@ -323,8 +356,19 @@ class CryptoAnalysisPlatform {
         document.getElementById('currentPair').textContent = 
             `${this.cryptoNames[symbol]} - ${this.timeframes[timeframe]}`;
         
-        // 生成模擬數據
-        this.currentData = this.generateMockData(symbol, timeframe);
+        try {
+            // 嘗試從幣安API獲取真實數據
+            this.currentData = await this.fetchBinanceData(symbol, timeframe);
+            document.querySelector('.data-source-info').textContent = 
+                '📊 數據來源：幣安官方API';
+        } catch (error) {
+            console.warn('幣安API獲取失敗，使用模擬數據:', error);
+            // 備用方案：使用模擬數據
+            this.currentData = this.generateMockData(symbol, timeframe);
+            document.querySelector('.data-source-info').textContent = 
+                '💡 目前使用模擬數據進行展示，具有真實市場波動特性';
+        }
+        
         this.currentIndicators = this.calculateIndicators(this.currentData);
         
         this.updateChart();
@@ -435,7 +479,7 @@ class CryptoAnalysisPlatform {
                     y: 0,
                     xref: 'paper',
                     yref: 'paper',
-                    text: '數據來源：模擬交易數據',
+                    text: '數據來源：幣安官方API',
                     showarrow: false,
                     xanchor: 'right',
                     yanchor: 'bottom',
