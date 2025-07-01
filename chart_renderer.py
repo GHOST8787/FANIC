@@ -22,7 +22,7 @@ class ChartRenderer:
             'bb_middle': '#70a1ff' # 布林中軌
         }
     
-    def create_candlestick_chart(self, df, symbol, indicators_config):
+    def create_candlestick_chart(self, df, symbol, indicators_config, smc_results=None):
         """
         創建蠟燭圖
         
@@ -30,6 +30,7 @@ class ChartRenderer:
             df (pandas.DataFrame): 包含OHLCV和技術指標的數據
             symbol (str): 交易對符號
             indicators_config (dict): 指標配置
+            smc_results (dict): SMC分析結果
             
         Returns:
             plotly.graph_objects.Figure: Plotly圖表對象
@@ -282,6 +283,72 @@ class ChartRenderer:
         for i in range(1, subplot_count + 1):
             fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(128,128,128,0.2)', row=i, col=1)
             fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(128,128,128,0.2)', row=i, col=1)
+        
+        # 添加SMC標記
+        if smc_results and "smc" in indicators_config:
+            # 添加擺動高點和低點
+            swing_highs = smc_results.get('swing_highs', [])
+            swing_lows = smc_results.get('swing_lows', [])
+            
+            if swing_highs:
+                swing_high_times = [sh[0] for sh in swing_highs]
+                swing_high_prices = [sh[1] for sh in swing_highs]
+                fig.add_trace(
+                    go.Scatter(
+                        x=swing_high_times,
+                        y=swing_high_prices,
+                        mode='markers',
+                        name='擺動高點',
+                        marker=dict(color='red', size=8, symbol='triangle-down'),
+                        showlegend=True
+                    ),
+                    row=1, col=1
+                )
+            
+            if swing_lows:
+                swing_low_times = [sl[0] for sl in swing_lows]
+                swing_low_prices = [sl[1] for sl in swing_lows]
+                fig.add_trace(
+                    go.Scatter(
+                        x=swing_low_times,
+                        y=swing_low_prices,
+                        mode='markers',
+                        name='擺動低點',
+                        marker=dict(color='green', size=8, symbol='triangle-up'),
+                        showlegend=True
+                    ),
+                    row=1, col=1
+                )
+            
+            # 添加訂單區塊
+            order_blocks = smc_results.get('order_blocks', [])
+            for ob in order_blocks:
+                color = 'rgba(0, 255, 0, 0.2)' if ob['type'] == 'bullish_ob' else 'rgba(255, 0, 0, 0.2)'
+                fig.add_shape(
+                    type="rect",
+                    x0=ob['time'],
+                    y0=ob['low'],
+                    x1=df.index[-1],  # 延伸到圖表結束
+                    y1=ob['high'],
+                    fillcolor=color,
+                    line=dict(color=color.replace('0.2', '0.8'), width=1),
+                    row=1, col=1
+                )
+            
+            # 添加流動性水平線
+            liquidity_zones = smc_results.get('liquidity_zones', {})
+            for zone_type, zones in liquidity_zones.items():
+                color = 'yellow' if zone_type == 'buy_side_liquidity' else 'orange'
+                for zone in zones:
+                    fig.add_hline(
+                        y=zone['price'],
+                        line_dash="dot",
+                        line_color=color,
+                        opacity=0.7,
+                        annotation_text=f"{zone['description']} (${zone['price']:.2f})",
+                        annotation_position="right",
+                        row=1, col=1
+                    )
         
         return fig
     

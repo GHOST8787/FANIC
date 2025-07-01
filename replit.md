@@ -88,9 +88,13 @@ The application follows a modular architecture with clear separation of concerns
 - API endpoints configurable in `CryptoDataFetcher` class
 - Chart styling and colors centralized in `ChartRenderer`
 
-## Changelog
+## Recent Changes
 
-- July 01, 2025. Initial setup
+- July 01, 2025. Initial setup with basic cryptocurrency analysis platform
+- July 01, 2025. Added mock data generator to handle API restrictions
+- July 01, 2025. Enhanced platform with SMC (Smart Money Concepts) analysis
+- July 01, 2025. Added automatic refresh (10-minute intervals) and trading signals display
+- July 01, 2025. Integrated buy/sell point recommendations with technical indicator analysis
 
 ## User Preferences
 

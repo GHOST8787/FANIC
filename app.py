@@ -6,6 +6,7 @@ import time
 from data_fetcher import CryptoDataFetcher
 from technical_indicators import TechnicalIndicators
 from chart_renderer import ChartRenderer
+from smc_analysis import SMCAnalysis
 
 # 設置頁面配置
 st.set_page_config(
@@ -21,9 +22,10 @@ def init_components():
     data_fetcher = CryptoDataFetcher()
     tech_indicators = TechnicalIndicators()
     chart_renderer = ChartRenderer()
-    return data_fetcher, tech_indicators, chart_renderer
+    smc_analyzer = SMCAnalysis()
+    return data_fetcher, tech_indicators, chart_renderer, smc_analyzer
 
-data_fetcher, tech_indicators, chart_renderer = init_components()
+data_fetcher, tech_indicators, chart_renderer, smc_analyzer = init_components()
 
 # 主要虛擬貨幣列表
 CRYPTOCURRENCIES = {
@@ -120,11 +122,14 @@ def main():
         if show_volume:
             selected_indicators["volume"] = True
             
-        # 自動刷新設置
-        st.subheader("自動刷新")
-        auto_refresh = st.checkbox("啟用自動刷新", value=True)
-        if auto_refresh:
-            refresh_interval = st.slider("刷新間隔(秒)", 5, 60, 10)
+        # SMC分析
+        show_smc = st.checkbox("SMC 智能資金概念分析")
+        if show_smc:
+            selected_indicators["smc"] = True
+            
+        # 自動刷新設置（固定10分鐘）
+        auto_refresh = True
+        refresh_interval = 600  # 10分鐘 = 600秒
     
     # 主要內容區域
     col1, col2 = st.columns([3, 1])
@@ -144,6 +149,10 @@ def main():
         # 顯示技術指標數值
         st.subheader("技術指標數值")
         indicators_container = st.empty()
+        
+        # 顯示交易信號
+        st.subheader("交易信號")
+        signals_container = st.empty()
     
     # 顯示數據來源提示
     if hasattr(data_fetcher, 'use_mock_data') and data_fetcher.use_mock_data:
@@ -159,11 +168,17 @@ def main():
             # 計算技術指標
             df_with_indicators = tech_indicators.calculate_indicators(df, selected_indicators)
             
+            # SMC分析
+            smc_results = None
+            if "smc" in selected_indicators:
+                smc_results = smc_analyzer.analyze_smc(df_with_indicators)
+            
             # 渲染圖表
             fig = chart_renderer.create_candlestick_chart(
                 df_with_indicators, 
                 selected_symbol, 
-                selected_indicators
+                selected_indicators,
+                smc_results
             )
             
             # 顯示圖表
@@ -224,6 +239,56 @@ def main():
                     bb_lower = latest_data.get('bb_lower', 0)
                     st.write(f"**布林上軌:** ${bb_upper:.2f}")
                     st.write(f"**布林下軌:** ${bb_lower:.2f}")
+                    
+            # 顯示交易信號和買賣點
+            with signals_container.container():
+                if smc_results:
+                    trading_signals = smc_results['trading_signals']
+                    
+                    # 市場偏向
+                    bias_color = {"bullish": "🟢", "bearish": "🔴", "neutral": "🟡"}
+                    st.write(f"**市場偏向:** {bias_color.get(trading_signals['market_bias'], '🟡')} {trading_signals['market_bias'].upper()}")
+                    
+                    # 買入信號
+                    if trading_signals['buy_signals']:
+                        st.write("**🟢 買入信號:**")
+                        for signal in trading_signals['buy_signals']:
+                            st.write(f"• {signal['reason']}")
+                            if signal['stop_loss']:
+                                st.write(f"  止損: ${signal['stop_loss']:.2f}")
+                    
+                    # 賣出信號
+                    if trading_signals['sell_signals']:
+                        st.write("**🔴 賣出信號:**")
+                        for signal in trading_signals['sell_signals']:
+                            st.write(f"• {signal['reason']}")
+                            if signal['stop_loss']:
+                                st.write(f"  止損: ${signal['stop_loss']:.2f}")
+                    
+                    # 關鍵價格水平
+                    if trading_signals['key_levels']:
+                        st.write("**🎯 關鍵價格水平:**")
+                        for level in trading_signals['key_levels'][:5]:  # 只顯示前5個
+                            level_type = "支撐" if level['type'] == 'support' else "阻力"
+                            st.write(f"• {level_type}: ${level['price']:.2f}")
+                
+                # 傳統技術指標的買賣建議
+                if "rsi" in selected_indicators:
+                    rsi_value = latest_data.get('rsi', 50)
+                    if rsi_value > 70:
+                        st.write("**RSI建議:** 🔴 超買區域，考慮賣出")
+                    elif rsi_value < 30:
+                        st.write("**RSI建議:** 🟢 超賣區域，考慮買入")
+                    else:
+                        st.write("**RSI建議:** 🟡 中性區域，觀望")
+                
+                if "macd" in selected_indicators:
+                    macd_value = latest_data.get('macd', 0)
+                    macd_signal_value = latest_data.get('macd_signal', 0)
+                    if macd_value > macd_signal_value:
+                        st.write("**MACD建議:** 🟢 黃金交叉，看漲信號")
+                    else:
+                        st.write("**MACD建議:** 🔴 死亡交叉，看跌信號")
         
         else:
             st.error("無法獲取數據，請檢查網絡連接或稍後再試")
