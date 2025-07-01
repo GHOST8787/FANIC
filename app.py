@@ -145,6 +145,10 @@ def main():
         st.subheader("技術指標數值")
         indicators_container = st.empty()
     
+    # 顯示數據來源提示
+    if hasattr(data_fetcher, 'use_mock_data') and data_fetcher.use_mock_data:
+        st.info("💡 目前使用模擬數據進行展示。這些數據具有真實的市場波動特性，可以完整展示平台功能。")
+    
     # 數據加載和顯示
     try:
         # 獲取歷史數據
