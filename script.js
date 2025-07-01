@@ -428,7 +428,26 @@ class CryptoAnalysisPlatform {
                 y: 1.02,
                 x: 0
             },
-            margin: { t: 80, b: 50, l: 60, r: 60 }
+            margin: { t: 80, b: 50, l: 60, r: 60 },
+            annotations: [
+                {
+                    x: 1,
+                    y: 0,
+                    xref: 'paper',
+                    yref: 'paper',
+                    text: '數據來源：模擬交易數據',
+                    showarrow: false,
+                    xanchor: 'right',
+                    yanchor: 'bottom',
+                    font: {
+                        size: 10,
+                        color: 'rgba(255, 255, 255, 0.6)'
+                    },
+                    bgcolor: 'rgba(0, 0, 0, 0.3)',
+                    bordercolor: 'rgba(255, 255, 255, 0.2)',
+                    borderwidth: 1
+                }
+            ]
         };
         
         // 創建圖表
@@ -451,7 +470,7 @@ class CryptoAnalysisPlatform {
             <div class="price-metric">
                 <span class="metric-label">當前價格</span>
                 <span class="metric-value ${priceChange >= 0 ? 'price-change-positive' : 'price-change-negative'}">
-                    $${latest.close.toFixed(8)}
+                    $${latest.close.toFixed(2)}
                 </span>
             </div>
             <div class="price-metric">
@@ -462,15 +481,15 @@ class CryptoAnalysisPlatform {
             </div>
             <div class="price-metric">
                 <span class="metric-label">開盤價</span>
-                <span class="metric-value">$${latest.open.toFixed(8)}</span>
+                <span class="metric-value">$${latest.open.toFixed(2)}</span>
             </div>
             <div class="price-metric">
                 <span class="metric-label">最高價</span>
-                <span class="metric-value">$${latest.high.toFixed(8)}</span>
+                <span class="metric-value">$${latest.high.toFixed(2)}</span>
             </div>
             <div class="price-metric">
                 <span class="metric-label">最低價</span>
-                <span class="metric-value">$${latest.low.toFixed(8)}</span>
+                <span class="metric-value">$${latest.low.toFixed(2)}</span>
             </div>
             <div class="price-metric">
                 <span class="metric-label">成交量</span>
@@ -489,7 +508,7 @@ class CryptoAnalysisPlatform {
             if (value) {
                 html += `<div class="price-metric">
                     <span class="metric-label">SMA(${document.getElementById('smaPeriod').value})</span>
-                    <span class="metric-value">$${value.toFixed(8)}</span>
+                    <span class="metric-value">$${value.toFixed(2)}</span>
                 </div>`;
             }
         }
@@ -498,7 +517,7 @@ class CryptoAnalysisPlatform {
             const value = this.currentIndicators.ema[this.currentIndicators.ema.length - 1];
             html += `<div class="price-metric">
                 <span class="metric-label">EMA(${document.getElementById('emaPeriod').value})</span>
-                <span class="metric-value">$${value.toFixed(8)}</span>
+                <span class="metric-value">$${value.toFixed(2)}</span>
             </div>`;
         }
         
@@ -565,7 +584,7 @@ class CryptoAnalysisPlatform {
             html += '<div style="margin: 1rem 0; font-weight: bold; color: #ffc107;">🎯 關鍵價格水平:</div>';
             signals.keyLevels.forEach(level => {
                 html += `<div class="signal-item signal-neutral">
-                    ${level.type}: $${level.price.toFixed(8)} - ${level.description}
+                    ${level.type}: $${level.price.toFixed(2)} - ${level.description}
                 </div>`;
             });
         }
