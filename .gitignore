@@ -1,1 +1,17 @@
 node_modules
+client/node_modules
+server/node_modules
+client/dist
+server/dist
+.env
+.env.*
+client/.env
+server/.env
+*.log
+.DS_Store
+*.local
+*.cache
+*.tmp
+*.swp
+*.zip
+safe_to_ignore/
