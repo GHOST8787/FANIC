@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "dotenv": "^17.2.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.3",
+    "@types/express-session": "^1.18.2",
+    "@types/node": "^24.0.13",
+    "@types/passport": "^1.0.17",
+    "@types/passport-facebook": "^3.0.3"
+  }
+}
