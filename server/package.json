@@ -27,11 +27,11 @@
     "helmet": "^6.0.1",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.2.0",
+    "openai": "^4.104.0",
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
-    "passport-line": "^0.0.1",
-    "openai": "^4.0.0"
+    "passport-line": "^0.0.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
@@ -39,7 +39,7 @@
     "@types/express": "^4.17.17",
     "@types/express-session": "^1.17.7",
     "@types/jsonwebtoken": "^9.0.1",
-    "@types/node": "^18.0.0",
+    "@types/node": "^18.19.120",
     "@types/passport": "^1.0.12",
     "@types/passport-facebook": "^2.1.11",
     "@types/passport-google-oauth20": "^2.0.11",
