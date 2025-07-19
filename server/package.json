@@ -30,8 +30,7 @@
     "openai": "^4.104.0",
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",
-    "passport-google-oauth20": "^2.0.0",
-    "passport-line": "^0.0.1"
+    "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
