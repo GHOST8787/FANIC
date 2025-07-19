@@ -19,7 +19,7 @@ export const askAiAboutChart = async (req: Request, res: Response) => {
     });
     const result = response.choices[0].message.content || '無回應';
     res.json({ result });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({ error: 'AI 分析失敗', detail: err.message });
   }
 }; 
