@@ -4,9 +4,9 @@
   "description": "虛擬貨幣技術分析平台後端 API",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn src/index.ts",
-    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
