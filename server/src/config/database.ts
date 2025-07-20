@@ -4,10 +4,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST || '162.120.184.42',
   user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'password',
-  database: process.env.DB_NAME || 'crypto_analysis',
+  password: process.env.DB_PASSWORD || 'ZEABUR2025',
+  database: process.env.DB_NAME || 'ZEABUR',
   port: parseInt(process.env.DB_PORT || '3306'),
   waitForConnections: true,
   connectionLimit: 10,
@@ -28,7 +28,7 @@ export const initDatabase = async () => {
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL UNIQUE,
-        provider ENUM('google', 'facebook', 'line') NOT NULL,
+        provider ENUM('google', 'facebook') NOT NULL,
         provider_id VARCHAR(255),
         avatar_url VARCHAR(500),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
